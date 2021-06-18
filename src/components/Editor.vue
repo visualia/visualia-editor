@@ -15,6 +15,8 @@ const props =
 
 const emit = defineEmit<(e: "update:modelValue", value: string) => string>();
 
+// Set up Monaco workers
+
 // @ts-ignore
 self.MonacoEnvironment = {
   getWorker(_: any, label: string) {
@@ -34,11 +36,45 @@ self.MonacoEnvironment = {
   },
 };
 
+// Set up a custom visualia language
+
+// https://github.com/microsoft/monaco-languages/blob/master/src/markdown/markdown.ts
+// https://github.com/microsoft/monaco-languages/blob/master/src/html/html.ts#L17
+
+monaco.languages.register({ id: "visualia" });
+
+//@ts-ignore
+monaco.languages
+  .getLanguages()
+  .filter(({ id }) => id == "markdown")[0]
+  .loader()
+  .then(({ language, conf }) => {
+    // https://github.com/microsoft/monaco-languages/blob/master/src/html/html.ts#L17
+    conf.wordPattern =
+      /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g;
+    monaco.languages.setLanguageConfiguration("visualia", conf);
+
+    language.tokenizer.html = [
+      [/<([\w-]+)\/>/, "tag"],
+      [
+        /<([\w-]+)/,
+        {
+          cases: {
+            "@empty": { token: "tag", next: "@tag.$1" },
+            "@default": { token: "tag", next: "@tag.$1" },
+          },
+        },
+      ],
+      [/<\/([\w-]+)\s*>/, { token: "tag" }],
+      [/<!--/, "comment", "@comment"],
+    ];
+    monaco.languages.setMonarchTokensProvider("visualia", language);
+  });
 const editorRef = ref(null);
 
 onMounted(() => {
   const editor = monaco.editor.create(editorRef.value!, {
-    language: "typescript",
+    language: "visualia",
     theme: "vs-dark",
     fontSize: 15,
     wordWrap: "wordWrapColumn",
