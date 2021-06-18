@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Editor from "./components/Editor.vue";
+
 const content = ref("Hello world");
 </script>
 

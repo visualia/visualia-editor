@@ -15,8 +15,9 @@ const props =
 
 const emit = defineEmit<(e: "update:modelValue", value: string) => string>();
 
+// @ts-ignore
 self.MonacoEnvironment = {
-  getWorker(_, label) {
+  getWorker(_: any, label: string) {
     if (label === "json") {
       return new jsonWorker();
     }
@@ -36,10 +37,10 @@ self.MonacoEnvironment = {
 const editorRef = ref(null);
 
 onMounted(() => {
-  const editor = monaco.editor.create(editorRef.value, {
+  const editor = monaco.editor.create(editorRef.value!, {
     language: "typescript",
     theme: "vs-dark",
-    fontSize: "15px",
+    fontSize: 15,
     wordWrap: "wordWrapColumn",
     wordWrapColumn: 70,
     lineNumbers: "off",
@@ -48,8 +49,9 @@ onMounted(() => {
     },
   });
   const model = editor.getModel();
-  model.updateOptions({ tabSize: 2 });
-
+  if (model) {
+    model.updateOptions({ tabSize: 2 });
+  }
   editor.onDidChangeModelContent((e) => {
     emit("update:modelValue", editor.getValue());
   });
@@ -58,15 +60,18 @@ onMounted(() => {
     () => props.modelValue,
     (content) => {
       if (content !== editor.getValue()) {
-        model.pushEditOperations(
-          [],
-          [
-            {
-              range: model.getFullModelRange(),
-              text: content,
-            },
-          ]
-        );
+        if (model) {
+          model.pushEditOperations(
+            [],
+            [
+              {
+                range: model.getFullModelRange(),
+                text: content || "",
+              },
+            ],
+            () => null
+          );
+        }
       }
     },
     { immediate: true }
