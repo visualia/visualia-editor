@@ -13,7 +13,7 @@ import { CompilerError } from "@vue/compiler-sfc";
 import marked from "marked";
 import { components, utils } from "visualia";
 
-export const compileMarkdown = (markdown: string) => {
+export function compileMarkdown(markdown: string) {
   const errors: CompilerError[] = [];
   let compiledMarkdown: RenderFunction | undefined = undefined;
   const parsedMarkdown = marked(markdown, {
@@ -21,8 +21,8 @@ export const compileMarkdown = (markdown: string) => {
   });
   try {
     const compilingdMarkdown = compile(parsedMarkdown, {
-      onError: (err) => {
-        errors.push(err);
+      onError: (error) => {
+        errors.push(error);
       },
     });
     compiledMarkdown = compilingdMarkdown;
@@ -30,20 +30,17 @@ export const compileMarkdown = (markdown: string) => {
     errors.push(e);
   }
   return { compiledMarkdown, errors };
-};
+}
 
-export const useCompiler = (markdown: Ref | string) => {
-  const compiledContent = computed(() =>
+export function useCompiledMarkdown(markdown: Ref) {
+  return computed(() =>
     defineComponent({
       components,
       setup() {
         onErrorCaptured((e) => console.log(e));
         return { ...utils };
       },
-      render: compileMarkdown(isRef(markdown) ? markdown.value : markdown)
-        .compiledMarkdown,
+      render: compileMarkdown(markdown.value).compiledMarkdown,
     })
   );
-
-  return compiledContent;
-};
+}

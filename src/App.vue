@@ -4,8 +4,6 @@ import { ref } from "vue";
 import Editor from "./components/Editor.vue";
 import Compiler from "./components/Compiler.vue";
 
-import { useCompiler } from "./lib";
-
 const content = ref("Hello world");
 </script>
 
