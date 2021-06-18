@@ -15,7 +15,7 @@ const emit = defineEmit<(e: "update:modelValue", value: string) => string>();
 // Set up Monaco workers
 
 // @ts-ignore
-self.MonacoEnvironment = {
+window.MonacoEnvironment = {
   getWorker(_: any, label: string) {
     if (label === "html") {
       return new htmlWorker();
