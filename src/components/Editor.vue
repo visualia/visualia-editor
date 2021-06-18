@@ -3,10 +3,7 @@ import { defineProps, defineEmit, ref, onMounted, watch } from "vue";
 import * as monaco from "monaco-editor";
 
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
-import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
-import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
 import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
-import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 
 const props =
   defineProps<{
@@ -20,17 +17,8 @@ const emit = defineEmit<(e: "update:modelValue", value: string) => string>();
 // @ts-ignore
 self.MonacoEnvironment = {
   getWorker(_: any, label: string) {
-    if (label === "json") {
-      return new jsonWorker();
-    }
-    if (label === "css" || label === "scss" || label === "less") {
-      return new cssWorker();
-    }
-    if (label === "html" || label === "handlebars" || label === "razor") {
+    if (label === "html") {
       return new htmlWorker();
-    }
-    if (label === "typescript" || label === "javascript") {
-      return new tsWorker();
     }
     return new editorWorker();
   },
@@ -41,48 +29,21 @@ self.MonacoEnvironment = {
 // https://github.com/microsoft/monaco-languages/blob/master/src/markdown/markdown.ts
 // https://github.com/microsoft/monaco-languages/blob/master/src/html/html.ts#L17
 
-monaco.languages.register({ id: "visualia" });
-
-//@ts-ignore
-monaco.languages
-  .getLanguages()
-  .filter(({ id }) => id == "markdown")[0]
-  .loader()
-  .then(({ language, conf }) => {
-    // https://github.com/microsoft/monaco-languages/blob/master/src/html/html.ts#L17
-    conf.wordPattern =
-      /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g;
-    monaco.languages.setLanguageConfiguration("visualia", conf);
-
-    language.tokenizer.html = [
-      [/<([\w-]+)\/>/, "tag"],
-      [
-        /<([\w-]+)/,
-        {
-          cases: {
-            "@empty": { token: "tag", next: "@tag.$1" },
-            "@default": { token: "tag", next: "@tag.$1" },
-          },
-        },
-      ],
-      [/<\/([\w-]+)\s*>/, { token: "tag" }],
-      [/<!--/, "comment", "@comment"],
-    ];
-    monaco.languages.setMonarchTokensProvider("visualia", language);
-  });
 const editorRef = ref(null);
 
 onMounted(() => {
   const editor = monaco.editor.create(editorRef.value!, {
-    language: "visualia",
+    language: "html",
     theme: "vs-dark",
     fontSize: 15,
     wordWrap: "wordWrapColumn",
     wordWrapColumn: 70,
     lineNumbers: "off",
+    renderLineHighlight: "none",
     minimap: {
       enabled: false,
     },
+    padding: { top: 24 },
   });
   const model = editor.getModel();
   if (model) {
