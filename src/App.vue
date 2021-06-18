@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 
 import Editor from "./components/Editor.vue";
 import Compiler from "./components/Compiler.vue";
 import Debug from "./components/Debug.vue";
 
-const content = ref("Hello world");
+const content = ref(decodeURIComponent(location.hash.slice(1)));
+
+watchEffect(() => {
+  history.replaceState({}, "", "#" + encodeURIComponent(content.value));
+});
 </script>
 
 <template>
