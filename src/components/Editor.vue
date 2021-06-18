@@ -43,7 +43,7 @@ onMounted(() => {
     minimap: {
       enabled: false,
     },
-    padding: { top: 24 },
+    padding: { top: 28 },
   });
   const model = editor.getModel();
   if (model) {

@@ -8,7 +8,8 @@ export default defineComponent({
     onErrorCaptured((e) => console.log(e));
     const { markdown } = toRefs(props);
     const compiledMarkdown = useCompiler(markdown);
-    return () => h("div", h(compiledMarkdown.value));
+    return () =>
+      h("div", { style: { padding: "24px" } }, h(compiledMarkdown.value));
   },
 });
 </script>
