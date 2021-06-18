@@ -6,6 +6,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "monaco-editor": "^0.25.2",
     "visualia": "^0.0.24",
     "vue": "^3.0.5"
   },
