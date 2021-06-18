@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { state } from "visualia";
+import { v } from "visualia";
 import { computed, ref } from "vue";
-const formattedState = computed(() =>
-  Object.entries(state)
+const formattedV = computed(() =>
+  Object.entries(v)
     .map(([key, value]) => `${stateName.value}.${key} = ${value}`)
     .join("\n")
 );
@@ -31,6 +31,6 @@ const stateName = computed(() => ["v", "vvv", "data"][index.value % 3]);
     "
     @click="index++"
   >
-    {{ formattedState ? formattedState : stateName + " is empty" }}
+    {{ formattedV ? formattedV : stateName + " is empty" }}
   </div>
 </template>
