@@ -8,7 +8,7 @@
   "dependencies": {
     "marked": "^2.1.1",
     "monaco-editor": "^0.25.2",
-    "visualia": "^0.0.27",
+    "visualia": "^0.0.30",
     "vue": "^3.0.5"
   },
   "devDependencies": {

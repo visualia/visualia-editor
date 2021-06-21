@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { v } from "visualia";
+import { ref as r } from "visualia";
 import { computed, ref } from "vue";
-const formattedV = computed(() =>
-  Object.entries(v)
-    .map(([key, value]) => `${stateName.value}.${key} = ${value}`)
+const formattedRef = computed(() =>
+  Object.entries(r)
+    .map(([key, value]) => `ref.${key} = ${value}`)
     .join("\n")
 );
-const index = ref(0);
-const stateName = computed(() => ["v", "vvv", "data"][index.value % 3]);
 </script>
 
 <template>
   <div
+    v-show="formattedRef"
     style="
       position: fixed;
       right: 24px;
@@ -29,8 +28,7 @@ const stateName = computed(() => ["v", "vvv", "data"][index.value % 3]);
       width: 250px;
       overflow: auto;
     "
-    @click="index++"
   >
-    {{ formattedV ? formattedV : stateName + " is empty" }}
+    {{ formattedRef }}
   </div>
 </template>
