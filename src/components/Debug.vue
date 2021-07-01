@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref as r } from "visualia";
+import { v } from "visualia";
 import { computed, ref } from "vue";
-const formattedRef = computed(() =>
-  Object.entries(r)
-    .map(([key, value]) => `ref.${key} = ${value}`)
+const formattedV = computed(() =>
+  Object.entries(v)
+    .map(([key, value]) => `v.${key} = ${value}`)
     .join("\n")
 );
 </script>
 
 <template>
   <div
-    v-show="formattedRef"
+    v-show="formattedV"
     style="
       position: fixed;
       right: 24px;
@@ -29,6 +29,6 @@ const formattedRef = computed(() =>
       overflow: auto;
     "
   >
-    {{ formattedRef }}
+    {{ formattedV }}
   </div>
 </template>
